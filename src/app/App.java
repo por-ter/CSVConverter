@@ -17,6 +17,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
@@ -102,33 +103,7 @@ public class App {
                 String com = e.getActionCommand();
 
                 if (com.equals("Datei wählen")) {
-
-                    // create an object of JFileChooser class 
-                    JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-
-                    // resctrict the user to selec files of all types 
-                    j.setAcceptAllFileFilterUsed(false);
-                    // set a title for the dialog 
-                    j.setDialogTitle("Wählen Sie eine Datei aus");
-                    // only allow files of .csv extension 
-                    FileNameExtensionFilter restrict = new FileNameExtensionFilter(".csv", "csv");
-                    j.addChoosableFileFilter(restrict);
-
-                    // invoke the showsOpenDialog function to show the save dialog 
-                    int chooseFile = j.showOpenDialog(frame);
-
-                    // if the user selects a file 
-                    if (chooseFile == JFileChooser.APPROVE_OPTION) {
-                        // set the label to the path of the selected file 
-                        String csvAbsPath = j.getSelectedFile().getAbsolutePath();
-
-                        ArrayList returnedCSVList = Converter.csvReader(csvAbsPath);
-
-                        createSaveUI(csvAbsPath, returnedCSVList);
-
-                    } else {
-                        label.setText("Bitte wählen Sie eine zu konvertierende CSV-Datei aus");
-                    }
+                    chooseCSV();
                 }
             }
         });
@@ -138,8 +113,34 @@ public class App {
 
         frame.add(panel);
 
-        // set the frame's visibility 
         frame.setVisible(true);
+    }
+
+    public static void chooseCSV() {
+        // create an object of JFileChooser class 
+        JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+
+        // resctrict the user to selec files of all types 
+        j.setAcceptAllFileFilterUsed(false);
+        // set a title for the dialog 
+        j.setDialogTitle("Wählen Sie eine Datei aus");
+        // only allow files of .csv extension 
+        FileNameExtensionFilter restrict = new FileNameExtensionFilter(".csv", "csv");
+        j.addChoosableFileFilter(restrict);
+
+        // invoke the showsOpenDialog function to show the save dialog 
+        int chooseFile = j.showOpenDialog(frame);
+
+        // if the user selects a file 
+        if (chooseFile == JFileChooser.APPROVE_OPTION) {
+            // set the label to the path of the selected file 
+            String csvAbsPath = j.getSelectedFile().getAbsolutePath();
+
+            ArrayList returnedCSVList = Converter.csvReader(csvAbsPath);
+
+            createSaveUI(csvAbsPath, returnedCSVList);
+
+        }
     }
 
     private static void createSaveUI(String csvPath, ArrayList returnedCSVList) {
@@ -187,6 +188,7 @@ public class App {
 
                     Converter.csvToTextConverter(csvPath, saveChooser.getSelectedFile(), returnedCSVList);
 
+                    taskCompletedUI();
                     dialogFrame.dispose();
 
                 }
@@ -201,5 +203,45 @@ public class App {
         // set visibility of dialog 
         dialogFrame.setVisible(true);
 
+    }
+
+    private static void taskCompletedUI() {
+        JDialog dialogFrame = new JDialog(frame, "CSV Converter");
+
+        dialogFrame.setSize(500, 150);
+
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        dialogFrame.setLocation(dim.width / 2 - dialogFrame.getSize().width / 2, dim.height / 2 - dialogFrame.getSize().height / 2);
+
+        JPanel dialogPanel = new JPanel();
+
+        JLabel dialogLabel = new JLabel("<html><div style='text-align: center;'>Konvertierung abgeschlossen.<br />Bitte wählen Sie eine andere Datei oder beenden Sie das Programm.<br /></div></html>", SwingConstants.CENTER);
+        dialogLabel.setFont(new Font("Default", Font.BOLD, 13));
+        dialogPanel.add(dialogLabel);
+
+        JPanel buttons = new JPanel(new GridBagLayout());
+
+        JButton newCSV = new JButton("Nächste Datei");
+        JButton exitApp = new JButton("EXIT");
+        buttons.add(newCSV);
+        buttons.add(exitApp);
+
+        newCSV.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                chooseCSV();
+            }
+        });
+
+        exitApp.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        dialogPanel.add(buttons);
+
+        dialogFrame.add(dialogPanel);
+
+        dialogFrame.setVisible(true);
     }
 }
