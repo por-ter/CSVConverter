@@ -1,6 +1,5 @@
 package app;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
@@ -82,7 +81,8 @@ public class App {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.NORTH;
 
-        JLabel label = new JLabel("Please select a CSV file to be converted");
+//        JLabel label = new JLabel("Please select a CSV file to be converted"); // English
+        JLabel label = new JLabel("Bitte wählen Sie eine zu konvertierende CSV-Datei aus");
         label.setFont(new Font("Default", Font.BOLD, 13));
 
         panel.add(label, gbc);
@@ -92,7 +92,7 @@ public class App {
         JPanel buttons = new JPanel(new GridBagLayout());
 
         // button to open open dialog 
-        JButton chooseFileButton = new JButton("Choose File");
+        JButton chooseFileButton = new JButton("Datei wählen");
 
         buttons.add(chooseFileButton, gbc);
 
@@ -101,7 +101,7 @@ public class App {
 
                 String com = e.getActionCommand();
 
-                if (com.equals("Choose File")) {
+                if (com.equals("Datei wählen")) {
 
                     // create an object of JFileChooser class 
                     JFileChooser j = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
@@ -109,7 +109,7 @@ public class App {
                     // resctrict the user to selec files of all types 
                     j.setAcceptAllFileFilterUsed(false);
                     // set a title for the dialog 
-                    j.setDialogTitle("Select a file");
+                    j.setDialogTitle("Wählen Sie eine Datei aus");
                     // only allow files of .csv extension 
                     FileNameExtensionFilter restrict = new FileNameExtensionFilter(".csv", "csv");
                     j.addChoosableFileFilter(restrict);
@@ -127,7 +127,7 @@ public class App {
                         createSaveUI(csvAbsPath, returnedCSVList);
 
                     } else {
-                        label.setText("Please select a CSV file to be converted");
+                        label.setText("Bitte wählen Sie eine zu konvertierende CSV-Datei aus");
                     }
                 }
             }
@@ -143,7 +143,7 @@ public class App {
     }
 
     private static void createSaveUI(String csvPath, ArrayList returnedCSVList) {
-        JDialog dialogFrame = new JDialog(frame, "Save As Txt");
+        JDialog dialogFrame = new JDialog(frame, "Als Text speichern");
 
         // setsize of dialog 
         dialogFrame.setSize(200, 200);
@@ -159,7 +159,7 @@ public class App {
         gbc.gridwidth = GridBagConstraints.REMAINDER;
         gbc.anchor = GridBagConstraints.NORTH;
 
-        JLabel dialogLabel = new JLabel("Import Successful");
+        JLabel dialogLabel = new JLabel("Import erfolgreich!");
         dialogLabel.setFont(new Font("Default", Font.BOLD, 13));
         dialogPanel.add(dialogLabel, gbc);
 
